@@ -4,10 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/A2IN/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_login.xml" value="0.27447916666666666" />
-        <entry key="..\:/Users/A2IN/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/A2IN/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Users/A2IN/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_register.xml" value="0.21218961625282168" />
         <entry key="..\:/Users/A2IN/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_start.xml" value="0.264" />
         <entry key="..\:/Users/A2IN/AndroidStudioProjects/ChatApp/app/src/main/res/layout/bar_layout.xml" value="0.264" />
+        <entry key="..\:/Users/A2IN/AndroidStudioProjects/ChatApp/app/src/main/res/menu/menu.xml" value="0.264" />
       </map>
     </option>
   </component>
