@@ -8,12 +8,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.chatapp.Adapter.MessageAdapter;
+import com.example.chatapp.Model.Chat;
 import com.example.chatapp.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +28,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -34,6 +41,11 @@ public class MessageActivity extends AppCompatActivity {
 
     ImageButton btn_send;
     EditText text_send;
+
+    MessageAdapter messageAdapter;
+    List<Chat> mChat;
+
+    RecyclerView recyclerView;
 
     Intent intent;
 
@@ -55,6 +67,14 @@ public class MessageActivity extends AppCompatActivity {
                 //finish();
             }
         });
+
+        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
@@ -86,7 +106,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
-                if(user.getImageUrl() == null){
+                if(user.getImageUrl()==null){
 
                 }
                 else if(user.getImageUrl().equals("default")){
@@ -95,6 +115,7 @@ public class MessageActivity extends AppCompatActivity {
                 else{
                     Glide.with(MessageActivity.this).load(user.getImageUrl()).into(profile_image);
                 }
+                readMessages(firebaseUser.getUid(),userid,user.getImageUrl());
             }
 
             @Override
@@ -115,5 +136,30 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.child("Chats").push().setValue(hashMap);
 
+    }
+
+    private void readMessages(String myid,String userid,String imageurl){
+        mChat = new ArrayList<>();
+
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mChat.clear();
+                for(DataSnapshot snapshot1:snapshot.getChildren()){
+                    Chat chat = snapshot1.getValue(Chat.class);
+                    if(chat.getReciever().equals(myid)&& chat.getSender().equals(userid) || chat.getReciever().equals(userid) && chat.getSender().equals(myid)){
+                        mChat.add(chat);
+                    }
+                    messageAdapter = new MessageAdapter(MessageActivity.this, mChat,imageurl);
+                    recyclerView.setAdapter(messageAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
